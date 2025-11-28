@@ -1,12 +1,32 @@
 const students = ['Поліна', 'Валерія ПТ', 'Валерія ЧТ', 'Валерія ВТ', 'Максим', 'Нікіта'];
+const VALIRIIA = 'Валерія';
+const MAXIM = 'Максим';
+const dayColumn = 1;
+const timeColumn = 2;
+const nameColumn = 3;
+const costColumn = 4;
 
-function getCalendarData() {
+const setSumToElementOfTable = (table, row, column) => {
+  table.getRange(row,column).setValue(`=SUM(D3:D${row-1})`);
+};
+
+const getCalendarData = () => {
   let cal = CalendarApp.getCalendarById('vika.bila97@gmail.com');
   let table = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
 
   let today = new Date();
+  let todayMonth = today.getMonth();
+
   let startDate = table.getRange(1,2).getValue();
-  let endDate = table.getRange(1,3).getValue();
+  let tableMonth = startDate.getMonth();
+
+  let endDate;
+  if(todayMonth === tableMonth) {
+    endDate = today;
+  } else {
+    endDate = today;
+    // need to set the last date of tableMonth to endDate
+  }
 
   let events = cal.getEvents(startDate, endDate);
 
@@ -17,36 +37,36 @@ function getCalendarData() {
   // let colorTest = events[1].getColor();
   // console.log(colorTest);
   // table.getRange(3,2).setBackground(colorTest);
-
-  let j=3;
-  for(let i=0; i<events.length; i++) {
+  
+  let currentRow = 2;
+  let lastRow = 4;
+  for(let i = 0; i<events.length; i++) {
     let name = events[i].getTitle();
     if(!students.includes(name)) {
       continue;
     }
+    currentRow++;
+
+    if(name.length > 7 && name.slice(0, 7) === VALIRIIA) {
+      name = VALIRIIA;
+    }
+    table.getRange(currentRow,nameColumn).setValue(name);
 
     let date = events[i].getStartTime();
     let day = date.getDate();
+    table.getRange(currentRow,dayColumn).setValue(day);
+
     let hours = date.getHours();
     let minutes = date.getMinutes();
     if (minutes === 0) {
       minutes = '00';
     }
-
-    if(day === today.getDate()+1) {
-      last = table.getRange(j,4);
-      last.setValue(`=SUM(D3:D${j-1})`);
-      return;
-    }
+    table.getRange(currentRow,timeColumn).setValue(`${hours}:${minutes}`);
     
-    table.getRange(i+3,1).setValue(day);
-    table.getRange(i+3,2).setValue(`${hours}:${minutes}`);
-    table.getRange(i+3,3).setValue(name);
+    table.getRange(currentRow,costColumn).setValue(500);
 
-    if(name === 'Максим') {
-      table.getRange(i+3,4).setValue(500);
-    }
-
-    j++;
+    lastRow++;
   }
-}
+
+  setSumToElementOfTable(table, lastRow, costColumn);
+};
