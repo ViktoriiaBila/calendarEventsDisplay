@@ -6,6 +6,18 @@ const timeColumn = 2;
 const nameColumn = 3;
 const costColumn = 4;
 
+const getEndDate = (month) => {
+  let today = new Date();
+  let currentMonth = today.getMonth();
+
+  if(currentMonth === month) {
+    return today;
+  } else {
+    // need to set the last date of month to endDate
+    new Data(today.getFullYear(), month, );
+  }
+};
+
 const setSumToElementOfTable = (table, row, column) => {
   table.getRange(row,column).setValue(`=SUM(D3:D${row-1})`);
 };
@@ -14,19 +26,9 @@ const getCalendarData = () => {
   let cal = CalendarApp.getCalendarById('vika.bila97@gmail.com');
   let table = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
 
-  let today = new Date();
-  let todayMonth = today.getMonth();
-
   let startDate = table.getRange(1,2).getValue();
   let tableMonth = startDate.getMonth();
-
-  let endDate;
-  if(todayMonth === tableMonth) {
-    endDate = today;
-  } else {
-    endDate = today;
-    // need to set the last date of tableMonth to endDate
-  }
+  let endDate = getCalendarData(tableMonth);
 
   let events = cal.getEvents(startDate, endDate);
 
