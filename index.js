@@ -1,21 +1,25 @@
-const students = ['Поліна', 'Валерія ПТ', 'Валерія ЧТ', 'Валерія ВТ', 'Максим', 'Нікіта'];
 const VALIRIIA = 'Валерія';
-const MAXIM = 'Максим';
+const students = ['Поліна', 'Валерія ПТ', 'Валерія ЧТ', 'Валерія ВТ', 'Максим', 'Нікіта', VALIRIIA];
 const dayColumn = 1;
 const timeColumn = 2;
 const nameColumn = 3;
 const costColumn = 4;
 
-const getEndDate = (month) => {
-  let today = new Date();
-  let currentMonth = today.getMonth();
+const getStartDate = (month) => {
+  const result = new Date();
+  result.setMonth(month);
 
-  if(currentMonth === month) {
-    return today;
-  } else {
-    // need to set the last date of month to endDate
-    new Data(today.getFullYear(), month, );
+  return result;
+};
+
+const getEndDate = (month) => {
+  const result = new Date();
+  if(result.getMonth() !== month) {
+    result.setMonth(month+1, 0);
+    result.setHours(23);
   }
+
+  return result;
 };
 
 const setSumToElementOfTable = (table, row, column) => {
@@ -23,16 +27,15 @@ const setSumToElementOfTable = (table, row, column) => {
 };
 
 const getCalendarData = () => {
-  let cal = CalendarApp.getCalendarById('vika.bila97@gmail.com');
-  let table = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  const cal = CalendarApp.getCalendarById('vika.bila97@gmail.com');
+  const table = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  const tableMonth = table.getRange(1,1).getValue()-1;
 
-  let startDate = table.getRange(1,2).getValue();
-  let tableMonth = startDate.getMonth();
-  let endDate = getCalendarData(tableMonth);
+  const startDate = getStartDate(tableMonth);
+  const endDate = getEndDate(tableMonth);
 
-  let events = cal.getEvents(startDate, endDate);
+  const events = cal.getEvents(startDate, endDate);
 
-  // let dateTest = events[1].getStartTime();
   // table.getRange(3,1).setValue(dateTest);
   // let titleTest = events[1].getTitle();
   // table.getRange(3,2).setValue(titleTest);
@@ -54,11 +57,11 @@ const getCalendarData = () => {
     }
     table.getRange(currentRow,nameColumn).setValue(name);
 
-    let date = events[i].getStartTime();
-    let day = date.getDate();
+    const date = events[i].getStartTime();
+    const day = date.getDate();
     table.getRange(currentRow,dayColumn).setValue(day);
 
-    let hours = date.getHours();
+    const hours = date.getHours();
     let minutes = date.getMinutes();
     if (minutes === 0) {
       minutes = '00';
