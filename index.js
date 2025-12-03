@@ -1,5 +1,5 @@
 const VALIRIIA = 'Валерія';
-const students = ['Поліна', 'Валерія ПТ', 'Валерія ЧТ', 'Валерія ВТ', 'Максим', 'Нікіта', VALIRIIA];
+const students = ['Поліна', 'Валерія ПТ', 'Валерія ЧТ', 'Валерія ВТ', 'Максим', 'Нікіта', 'Сергій', VALIRIIA];
 const dayColumn = 1;
 const timeColumn = 2;
 const nameColumn = 3;
@@ -7,7 +7,8 @@ const costColumn = 4;
 
 const getStartDate = (month) => {
   const result = new Date();
-  result.setMonth(month);
+  result.setMonth(month, 1);
+  result.setHours(0);
 
   return result;
 };
@@ -36,13 +37,6 @@ const getCalendarData = () => {
 
   const events = cal.getEvents(startDate, endDate);
 
-  // table.getRange(3,1).setValue(dateTest);
-  // let titleTest = events[1].getTitle();
-  // table.getRange(3,2).setValue(titleTest);
-  // let colorTest = events[1].getColor();
-  // console.log(colorTest);
-  // table.getRange(3,2).setBackground(colorTest);
-  
   let currentRow = 2;
   let lastRow = 4;
   for(let i = 0; i<events.length; i++) {
