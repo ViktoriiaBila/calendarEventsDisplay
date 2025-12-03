@@ -1,9 +1,18 @@
 const VALIRIIA = 'Валерія';
 const students = ['Поліна', 'Валерія ПТ', 'Валерія ЧТ', 'Валерія ВТ', 'Максим', 'Нікіта', 'Сергій', VALIRIIA];
+const titles = ['День', 'Час', 'Учень', 'Оплата'];
+const dayTitle = {1: 'День'};
+const timeTitle = {2: 'Час'};
+const nameTitle = {3: 'Учень'};
+const costTitle = {4: 'Оплата'};
+
+const columns = {day: 1, time: 2, name: 3, cost: 4};
 const dayColumn = 1;
 const timeColumn = 2;
 const nameColumn = 3;
 const costColumn = 4;
+
+const cost = 500;
 
 const getStartDate = (month) => {
   const result = new Date();
@@ -23,48 +32,62 @@ const getEndDate = (month) => {
   return result;
 };
 
+const setTitles = (table) => {
+  for(let i = 0; i < titles.length; i++) {
+    table.getRange(1,i+1).setValue(titles[i]);
+  }
+};
+
+const fillCell = (table, row, values) => {
+  for(let c in columns) {
+    table.getRange(row, columns[c]).setValue(values[c]);
+  }
+};
+
 const setSumToElementOfTable = (table, row, column) => {
-  table.getRange(row,column).setValue(`=SUM(D3:D${row-1})`);
+  table.getRange(row,column).setValue(`=SUM(D2:D${row-1})`);
 };
 
 const getCalendarData = () => {
   const cal = CalendarApp.getCalendarById('vika.bila97@gmail.com');
   const table = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  const tableMonth = table.getRange(1,1).getValue()-1;
+
+  table.clear();
+
+  const tableMonth = Number(table.getName())-1;
 
   const startDate = getStartDate(tableMonth);
   const endDate = getEndDate(tableMonth);
 
   const events = cal.getEvents(startDate, endDate);
 
-  let currentRow = 2;
-  let lastRow = 4;
-  for(let i = 0; i<events.length; i++) {
+  setTitles(table);
+
+  let currentRow = 1;
+  let lastRow = 2;
+  for(let i = 0; i < events.length; i++) {
     let name = events[i].getTitle();
     if(!students.includes(name)) {
       continue;
     }
-    currentRow++;
-
+    
     if(name.length > 7 && name.slice(0, 7) === VALIRIIA) {
       name = VALIRIIA;
     }
-    table.getRange(currentRow,nameColumn).setValue(name);
 
     const date = events[i].getStartTime();
     const day = date.getDate();
-    table.getRange(currentRow,dayColumn).setValue(day);
-
     const hours = date.getHours();
     let minutes = date.getMinutes();
     if (minutes === 0) {
       minutes = '00';
     }
-    table.getRange(currentRow,timeColumn).setValue(`${hours}:${minutes}`);
-    
-    table.getRange(currentRow,costColumn).setValue(500);
+    const time = `${hours}:${minutes}`;
 
+    currentRow++;
     lastRow++;
+
+    fillCell(table, currentRow, {day, time, name, cost});
   }
 
   setSumToElementOfTable(table, lastRow, costColumn);
