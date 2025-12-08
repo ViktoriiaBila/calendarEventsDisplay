@@ -5,6 +5,7 @@ const columns = {day: 1, time: 2, name: 3, cost: 4};
 const cost = 500;
 const titleColor = '#b7e1cd';
 const cellColor = '#cccccc';
+const columnWidths = [100, 80, 150, 100];
 
 const getStartDate = (month) => {
   const result = new Date();
@@ -63,6 +64,9 @@ const getCalendarData = () => {
   const table = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
 
   table.clear();
+  for(let i = 0; i < columnWidths.length; i++) {
+    table.setColumnWidth(i+1, columnWidths[i]);
+  }
 
   const tableMonth = Number(table.getName())-1;
 
