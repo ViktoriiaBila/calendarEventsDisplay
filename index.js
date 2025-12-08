@@ -1,16 +1,8 @@
 const VALIRIIA = 'Валерія';
 const students = ['Поліна', 'Валерія ПТ', 'Валерія ЧТ', 'Валерія ВТ', 'Максим', 'Нікіта', 'Сергій', VALIRIIA];
 const titles = ['День', 'Час', 'Учень', 'Оплата'];
-const dayTitle = {1: 'День'};
-const timeTitle = {2: 'Час'};
-const nameTitle = {3: 'Учень'};
-const costTitle = {4: 'Оплата'};
 
 const columns = {day: 1, time: 2, name: 3, cost: 4};
-const dayColumn = 1;
-const timeColumn = 2;
-const nameColumn = 3;
-const costColumn = 4;
 
 const cost = 500;
 
@@ -90,5 +82,5 @@ const getCalendarData = () => {
     fillCell(table, currentRow, {day, time, name, cost});
   }
 
-  setSumToElementOfTable(table, lastRow, costColumn);
+  setSumToElementOfTable(table, lastRow, columns.cost);
 };
