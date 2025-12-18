@@ -1,9 +1,9 @@
 const id = 'vika.bila97@gmail.com';
 const VALIRIIA = 'Валерія';
 const students = ['Поліна', 'Валерія ПТ', 'Валерія ЧТ', 'Валерія ВТ', 'Максим', 'Нікіта', 'Сергій', VALIRIIA];
-const titlesArray = ['День', 'Час', 'Учень', 'Оплата'];
 const titles = {day: 'День', time: 'Час', name: 'Учень', cost: 'Оплата'};
 const columns = {day: 1, time: 2, name: 3, cost: 4};
+const alfabetColumns = {day: 'A', time: 'B', name: 'C', cost: 'D'};
 const cost = 500;
 const titleColor = '#b7e1cd';
 const cellColor = '#cccccc';
@@ -25,6 +25,7 @@ const main = () => {
 
   let currentRow = 1;
   let lastRow = 2;
+  let dayCell = {day: 0, rowCount: 0};
   for(let i = 0; i < events.length; i++) {
     let name = events[i].getTitle();
     if(!students.includes(name)) {
@@ -47,8 +48,37 @@ const main = () => {
     currentRow++;
     lastRow++;
 
-    fillRow(table, currentRow, {day, time, name, cost});
+    fillRow(table, currentRow, {time, name, cost});
+    // for test
+    fillCell(table, currentRow, 5, day);
     formatRow(table, currentRow, Object.values(columns), cellColor, true);
+
+    let nextDay = 0;
+    if(i !== events.length - 1) {
+      nextDay = events[i+1].getStartTime().getDate();
+    }
+    
+    if(dayCell.day === day) {
+      dayCell.rowCount++;
+
+      if(dayCell.day !== nextDay) {
+        //need to combine all rows (with the same day) from startRow to endRow
+        let startRow = currentRow + 1 - dayCell.rowCount;
+        let endRow = currentRow;
+        
+        // do combine
+        table
+          .getRange(`${alfabetColumns.day}${startRow}:${alfabetColumns.day}${endRow}`)
+          .merge()
+          .setValue(day);
+        // fill dayCell 
+
+      }
+    } else {
+
+      dayCell.day = day;
+      dayCell.rowCount = 1;
+    }
   }
 
   setSumToCell(table, lastRow, columns.cost);
@@ -86,10 +116,21 @@ const getEndDate = (month) => {
   return result;
 };
 
+const fillCell = (table, row, column, value) => {
+  table.getRange(row, column).setValue(value);
+};
+
 const fillRow = (table, row, values) => {
   for(let c in columns) {
-    table.getRange(row, columns[c]).setValue(values[c]);
+    if(c in values) {
+      fillCell(table, row, columns[c], values[c]);
+    }
   }
+  // columns.forEach((column) => {
+  //   if(column in values) {
+  //     fillCell(table, row, columns[c], values[c]);
+  //   }
+  // })
 };
 
 const formatCell = (table, row, column, color, centerFlag, boldFlag = false) => {
