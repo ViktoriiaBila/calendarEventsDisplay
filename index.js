@@ -25,7 +25,7 @@ const main = () => {
 
   let currentRow = 1;
   let lastRow = 2;
-  let dayCell = {day: 0, rowCount: 0};
+  let rowCount = 1;
   for(let i = 0; i < events.length; i++) {
     let name = events[i].getTitle();
     if(!students.includes(name)) {
@@ -49,8 +49,6 @@ const main = () => {
     lastRow++;
 
     fillRow(table, currentRow, {time, name, cost});
-    // for test
-    fillCell(table, currentRow, 5, day);
     formatRow(table, currentRow, Object.values(columns), cellColor, true);
 
     let nextDay = 0;
@@ -58,27 +56,19 @@ const main = () => {
       nextDay = events[i+1].getStartTime().getDate();
     }
     
-    if(dayCell.day === day) {
+    if(day === nextDay) {
       dayCell.rowCount++;
-
-      if(dayCell.day !== nextDay) {
-        //need to combine all rows (with the same day) from startRow to endRow
-        let startRow = currentRow + 1 - dayCell.rowCount;
-        let endRow = currentRow;
-        
-        // do combine
-        table
-          .getRange(`${alfabetColumns.day}${startRow}:${alfabetColumns.day}${endRow}`)
-          .merge()
-          .setValue(day);
-        // fill dayCell 
-
-      }
+    } else if(rowCount === 1) {
+      fillCell(table, currentRow, columns.day, day);
     } else {
-
-      dayCell.day = day;
-      dayCell.rowCount = 1;
+      table
+        .getRange(`${alfabetColumns.day}${currentRow+1-rowCount}:${alfabetColumns.day}${currentRow}`)
+        .merge()
+        .setValue(day);
+      
+      rowCount = 1;
     }
+
   }
 
   setSumToCell(table, lastRow, columns.cost);
