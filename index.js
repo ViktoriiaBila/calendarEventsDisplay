@@ -57,7 +57,7 @@ const main = () => {
     }
     
     if(day === nextDay) {
-      dayCell.rowCount++;
+      rowCount++;
     } else if(rowCount === 1) {
       fillCell(table, currentRow, columns.day, day);
     } else {
