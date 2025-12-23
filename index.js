@@ -79,11 +79,7 @@ const main = () => {
     } else if(rowCount === 1) {
       fillCell(table, currentRow, columns.day.number, day);
     } else {
-      table
-        .getRange(`${columns.day.alfabetCharacter}${currentRow+1-rowCount}:${columns.day.alfabetCharacter}${currentRow}`)
-        .merge()
-        .setValue(day);
-      
+      mergeAndFillCells(table, currentRow+1-rowCount, currentRow, columns.day.alfabetCharacter, day);
       rowCount = 1;
     }
 
@@ -122,6 +118,10 @@ const getEndDate = (month) => {
   }
 
   return result;
+};
+
+const mergeAndFillCells = (table, startRow, endRow, columnAlfabet, value) => {
+  table.getRange(`${columnAlfabet}${startRow}:${columnAlfabet}${endRow}`).merge().setValue(value);
 };
 
 const fillCell = (table, row, column, value) => {
