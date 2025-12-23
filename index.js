@@ -57,11 +57,13 @@ const main = () => {
     const date = events[i].getStartTime();
     const day = date.getDate();
     const hours = date.getHours();
-    let minutes = date.getMinutes();
-    if (minutes === 0) {
-      minutes = '00';
+    const minutes = date.getMinutes();
+    let time = '';
+    if (minutes < 10) {
+      time = `${hours}:0${minutes}`;
+    } else {
+      time = `${hours}:${minutes}`;
     }
-    const time = `${hours}:${minutes}`;
 
     currentRow++;
     lastRow++;
