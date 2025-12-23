@@ -1,9 +1,28 @@
 const id = 'vika.bila97@gmail.com';
 const VALIRIIA = 'Валерія';
 const students = ['Поліна', 'Валерія ПТ', 'Валерія ЧТ', 'Валерія ВТ', 'Максим', 'Нікіта', 'Сергій', VALIRIIA];
-const titles = {day: 'День', time: 'Час', name: 'Учень', cost: 'Оплата'};
-const columns = {day: 1, time: 2, name: 3, cost: 4};
-const alfabetColumns = {day: 'A', time: 'B', name: 'C', cost: 'D'};
+const columns = {
+  day: {
+    title: 'День',
+    number: 1,
+    alfabetCharacter: 'A'
+  },
+  time: {
+    title: 'Час',
+    number: 2,
+    alfabetCharacter: 'B'
+  },
+  name: {
+    title: 'Учень',
+    number: 3,
+    alfabetCharacter: 'C'
+  },
+  cost: {
+    title: 'Оплата',
+    number: 4,
+    alfabetCharacter: 'D'
+  }
+};
 const cost = 500;
 const titleColor = '#b7e1cd';
 const cellColor = '#cccccc';
@@ -18,10 +37,8 @@ const main = () => {
     table.setColumnWidth(i+1, columnWidths[i]);
   }
 
-  fillRow(table, 1, titles);
-  for(let title in titles) {
-    formatCell(table, 1, columns[title], titleColor, true, true);
-  }
+  fillRowWithTitles(table);
+  formatRowWithTitles(table);
 
   let currentRow = 1;
   let lastRow = 2;
@@ -49,7 +66,7 @@ const main = () => {
     lastRow++;
 
     fillRow(table, currentRow, {time, name, cost});
-    formatRow(table, currentRow, Object.values(columns), cellColor, true);
+    formatRow(table, currentRow, cellColor, true);
 
     let nextDay = 0;
     if(i !== events.length - 1) {
@@ -59,10 +76,10 @@ const main = () => {
     if(day === nextDay) {
       rowCount++;
     } else if(rowCount === 1) {
-      fillCell(table, currentRow, columns.day, day);
+      fillCell(table, currentRow, columns.day.number, day);
     } else {
       table
-        .getRange(`${alfabetColumns.day}${currentRow+1-rowCount}:${alfabetColumns.day}${currentRow}`)
+        .getRange(`${columns.day.alfabetCharacter}${currentRow+1-rowCount}:${columns.day.alfabetCharacter}${currentRow}`)
         .merge()
         .setValue(day);
       
@@ -71,7 +88,7 @@ const main = () => {
 
   }
 
-  setSumToCell(table, lastRow, columns.cost);
+  setSumToCell(table, lastRow, columns.cost.number);
 };
 
 const getTable = () => {
@@ -111,16 +128,14 @@ const fillCell = (table, row, column, value) => {
 };
 
 const fillRow = (table, row, values) => {
-  for(let c in columns) {
-    if(c in values) {
-      fillCell(table, row, columns[c], values[c]);
-    }
+  for(let value in values) {
+    fillCell(table, row, columns[value].number, values[value]);
   }
-  // columns.forEach((column) => {
-  //   if(column in values) {
-  //     fillCell(table, row, columns[c], values[c]);
-  //   }
-  // })
+};
+
+const fillRowWithTitles = (table) => {
+  Object.values(columns).forEach((element) =>
+    fillCell(table, 1, element.number, element.title));
 };
 
 const formatCell = (table, row, column, color, centerFlag, boldFlag = false) => {
@@ -137,11 +152,14 @@ const formatCell = (table, row, column, color, centerFlag, boldFlag = false) => 
   }
 };
 
-/*
-columns - array of columns numbers - [Number]
-*/
-const formatRow = (table, row, columns, color, centerFlag, boldFlag = false) => {
-  columns.forEach((column) => formatCell(table, row, column, color, centerFlag, boldFlag));
+const formatRow = (table, row, color, centerFlag, boldFlag = false) => {
+  Object.values(columns).forEach((element) => 
+    formatCell(table, row, element.number, color, centerFlag, boldFlag));
+};
+
+const formatRowWithTitles = (table) => {
+  Object.values(columns).forEach((element) =>
+    formatCell(table, 1, element.number, titleColor, true, true));
 };
 
 const setSumToCell = (table, row, column) => {
