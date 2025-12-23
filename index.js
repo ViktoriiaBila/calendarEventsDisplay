@@ -5,37 +5,38 @@ const columns = {
   day: {
     title: 'День',
     number: 1,
-    alfabetCharacter: 'A'
+    alfabetCharacter: 'A',
+    width: 100
   },
   time: {
     title: 'Час',
     number: 2,
-    alfabetCharacter: 'B'
+    alfabetCharacter: 'B',
+    width: 80
   },
   name: {
     title: 'Учень',
     number: 3,
-    alfabetCharacter: 'C'
+    alfabetCharacter: 'C',
+    width: 150
   },
   cost: {
     title: 'Оплата',
     number: 4,
-    alfabetCharacter: 'D'
+    alfabetCharacter: 'D',
+    width: 100
   }
 };
 const cost = 500;
 const titleColor = '#b7e1cd';
 const cellColor = '#cccccc';
-const columnWidths = [100, 80, 150, 100];
 
 const main = () => {
   const table = getTable();
   const events = getCalendarData(id, table);
   
   table.clear();
-  for(let i = 0; i < columnWidths.length; i++) {
-    table.setColumnWidth(i+1, columnWidths[i]);
-  }
+  Object.values(columns).forEach((element, i) => table.setColumnWidth(i+1, element.width));
 
   fillRowWithTitles(table);
   formatRowWithTitles(table);
