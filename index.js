@@ -58,12 +58,11 @@ const main = () => {
     const day = date.getDate();
     const hours = date.getHours();
     const minutes = date.getMinutes();
-    let time = '';
+    let time = String(hours) + ':';
     if (minutes < 10) {
-      time = `${hours}:0${minutes}`;
-    } else {
-      time = `${hours}:${minutes}`;
+      time += '0';
     }
+    time += minutes;
 
     currentRow++;
     lastRow++;
